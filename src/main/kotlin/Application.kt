@@ -1,7 +1,9 @@
+import data.model.AuthCredentials
 import data.model.Job
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
@@ -20,6 +22,44 @@ fun Application.module() {
     install(CallLogging) {
         level = Level.INFO
     }
+    val jobdetail = jobs()
+
+
+    install(Authentication){
+        basic("auth-basic") {
+            realm="access to the '/login' path"
+            validate{AuthCredentials->
+                if(AuthCredentials.name=="Aqdas" && AuthCredentials.password=="aqdas"){
+                    UserIdPrincipal(AuthCredentials.name)
+                }else{
+                    null
+                }
+
+            }
+        }
+    }
+
+    routing {
+        get("/job/{driver_id}") {
+            val id = call.parameters["driver_id"]
+            ContentType.Application.Json
+            val joblist: Job = jobdetail.find { it.driver_id == id!!.toString() }!!
+            call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
+            call.respond(joblist)
+        }
+        authenticate("auth-basic") {
+            get("/login") {
+                call.respondText("Hello, ${call.principal<UserIdPrincipal>()?.name}!")            }
+        }
+//        post("/job") {
+//            val job = call.receive<Job>()
+//            jobdetail.add(job)
+//            call.respondText("job stored correctly ", status = HttpStatusCode.Created)
+//        }
+    }
+}
+
+private fun Application.jobs(): MutableList<Job> {
     val jobdetail = mutableListOf<Job>()
     jobdetail.addAll(
         arrayOf(
@@ -33,18 +73,5 @@ fun Application.module() {
             isLenient = true
         })
     }
-    routing {
-        get("/job/{driver_id}") {
-            val id = call.parameters["driver_id"]
-            ContentType.Application.Json
-            val joblist: Job = jobdetail.find { it.driver_id == id!!.toString() }!!
-            call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
-            call.respond(joblist)
-        }
-//        post("/job") {
-//            val job = call.receive<Job>()
-//            jobdetail.add(job)
-//            call.respondText("job stored correctly ", status = HttpStatusCode.Created)
-//        }
-    }
+    return jobdetail
 }
