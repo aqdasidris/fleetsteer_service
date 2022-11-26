@@ -1,5 +1,6 @@
 import data.model.AuthCredentials
 import data.model.Job
+import data.model.MemberData
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -12,28 +13,45 @@ import io.ktor.server.routing.*
 import io.ktor.util.*
 import io.ktor.util.date.*
 import kotlinx.serialization.json.Json
+import login.AuthenticationUsecase
+import login.IAuthRepository
+import login.InMemoryAuthRepository
+import login.loginRoute
 import org.slf4j.event.Level
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 
 fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
+
+data class CustomUserIdPrinciple(val uID: Long, val type: String) : Principal
 
 fun Application.module() {
     install(CallLogging) {
         level = Level.INFO
     }
     val jobdetail = jobs()
-
-
+    val memberData= mutableListOf<MemberData>()
+    memberData.addAll(
+        arrayOf(
+            MemberData(id=0, type="Admin"),
+            MemberData(id=1,"Manager"),
+            MemberData(id=2, "Driver")
+        )
+    )
     install(Authentication){
         basic("auth-basic") {
             realm="access to the '/login' path"
-            validate{AuthCredentials->
-                if(AuthCredentials.name=="Aqdas" && AuthCredentials.password=="aqdas"){
-                    UserIdPrincipal(AuthCredentials.name)
-                }else{
-                    null
+            validate{authCredentials->
+                val repository: IAuthRepository = InMemoryAuthRepository()
+                val authenticator = AuthenticationUsecase(repository)
+                val isValidUser = authenticator.isUserValid(authCredentials.name, authCredentials.password)
+                if(isValidUser.first){
+                    val uID = isValidUser.second
+                    uID?.let {
+                        val userData = authenticator.getUserData(uID)
+                        return@validate CustomUserIdPrinciple(userData.uID, userData.type.name)
+                    }
+
                 }
+                null
 
             }
         }
@@ -47,10 +65,7 @@ fun Application.module() {
             call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
             call.respond(joblist)
         }
-        authenticate("auth-basic") {
-            get("/login") {
-                call.respondText("Hello, ${call.principal<UserIdPrincipal>()?.name}!")            }
-        }
+        loginRoute()
 //        post("/job") {
 //            val job = call.receive<Job>()
 //            jobdetail.add(job)
