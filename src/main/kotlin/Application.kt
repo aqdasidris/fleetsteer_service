@@ -1,5 +1,4 @@
-import data.model.AuthCredentials
-import data.model.Job
+import job.data.JobStatus
 import data.model.MemberData
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -7,11 +6,12 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
 import io.ktor.util.date.*
+import job.jobRoute
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import login.AuthenticationUsecase
 import login.IAuthRepository
@@ -21,11 +21,18 @@ import org.slf4j.event.Level
 
 fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@Serializable
 data class CustomUserIdPrinciple(val uID: Long, val type: String) : Principal
 
 fun Application.module() {
     install(CallLogging) {
         level = Level.INFO
+    }
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+        })
     }
     val jobdetail = jobs()
     val memberData= mutableListOf<MemberData>()
@@ -58,14 +65,15 @@ fun Application.module() {
     }
 
     routing {
-        get("/job/{driver_id}") {
-            val id = call.parameters["driver_id"]
-            ContentType.Application.Json
-            val joblist: Job = jobdetail.find { it.driver_id == id!!.toString() }!!
-            call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
-            call.respond(joblist)
-        }
+//        get("/job/{driver_id}") {
+//            val id = call.parameters["driver_id"]
+//            ContentType.Application.Json
+//            val joblist: JobStatus = jobdetail.find { it.driver_id == id!!.toString() }!!
+//            call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
+//            call.respond(joblist)
+//        }
         loginRoute()
+        jobRoute()
 //        post("/job") {
 //            val job = call.receive<Job>()
 //            jobdetail.add(job)
@@ -74,19 +82,12 @@ fun Application.module() {
     }
 }
 
-private fun Application.jobs(): MutableList<Job> {
-    val jobdetail = mutableListOf<Job>()
+private fun Application.jobs(): MutableList<JobStatus> {
+    val jobdetail = mutableListOf<JobStatus>()
     jobdetail.addAll(
         arrayOf(
-            Job("1", "2124D", "51353515", "468646", "453353", "4543453", estimate_time = getTimeMillis())
+            JobStatus("1", "2124D", "51353515", "468646", "453353", "4543453", estimate_time = getTimeMillis())
         )
     )
-
-    install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-        })
-    }
     return jobdetail
 }
