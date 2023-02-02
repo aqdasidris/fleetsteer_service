@@ -1,7 +1,7 @@
 package job.repository
 
-import job.data.JobData
+import job.data.JobEntity
 
 interface IJobRepository {
-    fun getData(job_id:Int): JobData?
+    fun getData(job_id:Int): JobEntity?
 }

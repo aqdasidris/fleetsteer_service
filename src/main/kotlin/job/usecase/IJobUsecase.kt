@@ -1,7 +1,7 @@
 package job.usecase
 
-import job.data.JobData
+import job.data.JobEntity
 
 interface IJobUsecase {
-    fun getJobData(job_id:Int): JobData
+    fun getJobData(job_id:Int): JobEntity
 }
