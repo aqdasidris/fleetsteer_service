@@ -9,6 +9,6 @@ class JobUsecase(private val repository: IJobRepository):IJobUsecase {
     }
 
     private fun JobEntity.toDomain():JobEntity{
-        return JobEntity(job_id = this.job_id, name = this.name,job_description=this.job_description, payment = this.payment, contact = this.contact)
+        return JobEntity(job_id = this.job_id, name = this.name,job_description=this.job_description, payment = this.payment, contact = this.contact, userId=this.userId)
     }
 }
