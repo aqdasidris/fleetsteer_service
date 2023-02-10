@@ -9,5 +9,13 @@ class JobRepository: IJobRepository {
         return jobstorage.find { it.job_id==job_id }
     }
 
+    override fun addJob(jobData: JobEntity) {
+        val existingJob=jobstorage.find { it.job_id == jobData.job_id || it.userId==jobData.userId }
+        if(existingJob!=null){
+            throw IllegalArgumentException("The job already exists")
+        }
+        jobstorage.add(jobData)
+    }
+
 
 }

@@ -4,4 +4,5 @@ import job.data.JobEntity
 
 interface IJobRepository {
     fun getData(job_id:Int): JobEntity?
+    fun addJob(jobData: JobEntity)
 }
