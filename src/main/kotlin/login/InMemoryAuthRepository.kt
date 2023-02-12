@@ -4,7 +4,7 @@ import java.lang.IllegalArgumentException
 
 class InMemoryAuthRepository : IAuthRepository{
 
-    private val defaultAdmin = IAuthRepository.UserData(1L, "admin", "admin", usertype = IAuthUsecase.UserType.Admin.name)
+    private val defaultAdmin = IAuthRepository.UserData(1, "admin", "admin", usertype = IAuthUsecase.UserType.Admin.name)
     private val storage: MutableList<IAuthRepository.UserData> = mutableListOf(defaultAdmin)
 
     override fun getUID(username: String): Long? {

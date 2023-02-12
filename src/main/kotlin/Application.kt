@@ -1,3 +1,4 @@
+import common.FleetSteerDatabase
 import job.data.JobStatus
 import data.model.MemberData
 import io.ktor.http.*
@@ -25,6 +26,7 @@ fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
 data class CustomUserIdPrinciple(val uID: Long, val type: String) : Principal
 
 fun Application.module() {
+    FleetSteerDatabase.init()
     install(CallLogging) {
         level = Level.INFO
     }

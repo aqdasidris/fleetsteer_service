@@ -4,6 +4,6 @@ import job.data.JobEntity
 
 typealias Error = String
 interface IJobUsecase {
-    fun getJobData(userId:Long): JobEntity
-    fun addJob(jobData:JobEntity):Pair<Boolean, Error?>
+   suspend fun getJobData(userId:Long): List<JobEntity?>
+   suspend fun addJob(jobData:JobEntity):Pair<Boolean, Error?>
 }
