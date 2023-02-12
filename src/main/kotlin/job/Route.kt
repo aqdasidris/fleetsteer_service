@@ -9,14 +9,14 @@ import io.ktor.util.*
 import job.data.JobEntity
 import job.repository.JobRepository
 import job.usecase.JobUsecase
+import java.util.logging.Logger
 
 fun Route.jobRoute(){
         get("/job/{user_id}") {
             val id=call.parameters["user_id"]
-            val jobinfo= jobsInfo()
-            val jobs:JobEntity=jobinfo.find { it.userId==id!!.toLong() }!!
+            val jobinfo= jobsInfo(id!!.toLong())
             call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
-            call.respond(jobs)
+            call.respond(jobinfo)
         }
         post("/job/add") {
             val repository=JobRepository()
@@ -30,13 +30,11 @@ fun Route.jobRoute(){
         }
 
 }
-public fun jobsInfo():MutableList<JobEntity>{
-    val job= mutableListOf<JobEntity>()
-    job.addAll(
-        arrayOf(
-            JobEntity(job_id = 2, name = "corn", job_description ="500kg of corn to be delivered", payment = 5000.00, contact = 989839284, userId = 1)
-        )
-    )
+public fun jobsInfo(userId:Long):JobEntity{
+    val repository=JobRepository()
+    val jobUsecase=JobUsecase(repository)
+    val job=jobUsecase.getJobData(userId)
     return job
+
 }
 

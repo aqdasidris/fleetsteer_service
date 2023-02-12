@@ -4,12 +4,12 @@ import job.data.JobEntity
 import job.repository.IJobRepository
 
 class JobUsecase(private val repository: IJobRepository):IJobUsecase {
-    override fun getJobData(job_id: Int): JobEntity {
-        return repository.getData(job_id)?.toDomain()?: throw IllegalArgumentException("Job id not found")
+    override fun getJobData(userId: Long): JobEntity {
+        return repository.getData(userId)?.toDomain()?: throw IllegalArgumentException("Job id not found")
     }
 
     override fun addJob(jobData: JobEntity): Pair<Boolean, Error?> {
-        val  existingJob=repository.getData(jobData.job_id)
+        val  existingJob=repository.getData(jobData.userId)
         if(existingJob!=null){
             return Pair(false,"job already Exists")
         }

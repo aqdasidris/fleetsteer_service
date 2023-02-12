@@ -24,7 +24,15 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-server-auth:$ktor_version")
+    val exposed_version: String by project
+    val h2_version: String by project
 
+    dependencies {
+        implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+        implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+        implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+        implementation("com.h2database:h2:$h2_version")
+    }
 
 }
 
