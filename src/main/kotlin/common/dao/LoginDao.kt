@@ -1,9 +1,12 @@
 package common.dao
 
-import login.IAuthRepository
+import login.data.UserData
+import login.repository.IAuthRepository
 
-//interface LoginDao {
-//    suspend fun getUid(username:String):Long?
-//    suspend fun insertNewUser(userData: IAuthRepository.UserData)
-//    suspend fun getUserData(uId:Long):IAuthRepository.UserData?
-//}
+interface LoginDao {
+    suspend fun getUid(username:String):UserData?
+    suspend fun insertNewUser(userData: UserData):UserData?
+    suspend fun getUserData(uId:Long):UserData?
+    suspend fun getAllUsers():List<UserData?>
+    suspend fun generateId(): Long?
+}

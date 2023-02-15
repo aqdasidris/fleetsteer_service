@@ -25,10 +25,9 @@ fun Route.jobRoute(){
         }
         post("/job/add") {
             val job=call.receive<JobEntity>()
-            val jobdata= jobUsecase.addJob(job)
+            jobUsecase.addJob(job)
             call.respondText("added sucessfully", status = HttpStatusCode.Created)
             call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
-            print(jobdata)
         }
 
 }

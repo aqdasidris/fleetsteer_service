@@ -2,7 +2,7 @@ package common
 
 import job.data.JobEntities
 import kotlinx.coroutines.Dispatchers
-import login.IAuthRepository
+import login.data.Userdata
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -14,7 +14,7 @@ object FleetSteerDatabase {
         val jdbcURL = "jdbc:h2:file:./build/db"
         val database = Database.connect(jdbcURL, driverClassName)
         transaction (database){
-            SchemaUtils.create(JobEntities)
+            SchemaUtils.create(JobEntities,Userdata)
         }
     }
     suspend fun <T> dbQuery(block: suspend () -> T): T =

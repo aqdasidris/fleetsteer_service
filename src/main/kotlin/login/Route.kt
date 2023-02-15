@@ -16,6 +16,7 @@ fun Route.loginRoute() {
         post("/login") {
             val uID: Long? = call.principal<CustomUserIdPrinciple>()?.uID
             val type: String? = call.principal<CustomUserIdPrinciple>()?.type
+
             if (type == null || uID == null) {
                 call.respond(HttpStatusCode.Unauthorized, "invalid username or password")
             }else{
@@ -25,7 +26,6 @@ fun Route.loginRoute() {
                     }
                 }
             }
-
         }
 
     }

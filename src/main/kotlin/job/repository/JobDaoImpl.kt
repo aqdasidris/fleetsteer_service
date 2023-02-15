@@ -22,17 +22,13 @@ class JobDaoImpl : JobDao {
         userId = row[JobEntities.userId]
     )
 
-    private fun resultRowtoJobEntities(row: ResultRow)=JobEntities
 
-
-
-    override suspend fun getJob(userId: Long): List<JobEntity?> = dbQuery {
+    override suspend fun getJob(userId: Long): List<JobEntity?> = dbQuery{
         JobEntities
             .select { JobEntities.userId eq userId  }
-            .map(::resultRowToJobsEntity)
-    }
+            .map(::resultRowToJobsEntity)    }
 
-    override suspend fun addJob(jobData: JobEntity):JobEntities? = dbQuery {
+    override suspend fun addJob(jobData: JobEntity): JobEntity? = dbQuery {
         val insertJobData= JobEntities.insert {
             it[JobEntities.job_id] = jobData.job_id
             it[JobEntities.name] = jobData.name
@@ -42,7 +38,7 @@ class JobDaoImpl : JobDao {
             it[contact] = jobData.contact
             it[userId] = jobData.userId
         }
-      insertJobData.resultedValues?.singleOrNull()?.let(::resultRowtoJobEntities)
+        insertJobData.resultedValues?.singleOrNull()?.let(::resultRowToJobsEntity)
     }
 
     override suspend fun getAllJobs(): List<JobEntity?> =

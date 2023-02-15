@@ -14,10 +14,12 @@ import io.ktor.util.date.*
 import job.jobRoute
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import login.AuthenticationUsecase
-import login.IAuthRepository
-import login.InMemoryAuthRepository
+import login.usecase.AuthenticationUsecase
+import login.repository.IAuthRepository
 import login.loginRoute
+import login.repository.LoginAuthRepository
+import login.repository.LoginDaoImpl
+import login.repository.getLoginDaoInstance
 import org.slf4j.event.Level
 
 fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -49,7 +51,7 @@ fun Application.module() {
         basic("auth-basic") {
             realm="access to the '/login' path"
             validate{authCredentials->
-                val repository: IAuthRepository = InMemoryAuthRepository()
+                val repository: IAuthRepository=LoginAuthRepository(getLoginDaoInstance())
                 val authenticator = AuthenticationUsecase(repository)
                 val isValidUser = authenticator.isUserValid(authCredentials.name, authCredentials.password)
                 if(isValidUser.first){

@@ -5,7 +5,7 @@ import job.data.JobEntities
 import job.data.JobEntity
 
 class JobRepository(val jobDao: JobDao): IJobRepository {
-    val jobEntity=JobEntities
+
 
     override suspend fun getData(userId: Long): List<JobEntity?> {
         return jobDao.getJob(userId)

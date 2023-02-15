@@ -1,7 +1,6 @@
 package job.data
 
 import kotlinx.serialization.Serializable
-import login.IAuthRepository
 import org.jetbrains.exposed.sql.Table
 
 
