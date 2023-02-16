@@ -4,32 +4,34 @@ import common.FleetSteerDatabase.dbQuery
 import common.dao.LoginDao
 import kotlinx.coroutines.runBlocking
 import login.data.UserData
-import login.data.Userdata
+import login.data.UserDataTable
 import login.usecase.data.UserType
 import org.jetbrains.exposed.sql.*
 
 class LoginDaoImpl : LoginDao {
 
-    private fun resultRowtoUserData(row: ResultRow) = UserData(
-        userID = row[Userdata.userID],
-        username = row[Userdata.username],
-        password = row[Userdata.password],
-        usertype = row[Userdata.password]
-    )
-
-    override suspend fun getUid(username: String): UserData? = dbQuery {
-        Userdata
-            .select { Userdata.username eq username }
-            .map(::resultRowtoUserData)
-            .singleOrNull()
+    private fun resultRowtoUserData(row: ResultRow): UserData {
+       println("MappingUserData $row")
+        return UserData(
+            userID =0, //row[UserDataTable.userID],
+            username = row[UserDataTable.username],
+            password = row[UserDataTable.password],
+            usertype = row[UserDataTable.password]
+        )
+    }
+    override suspend fun getUid(username: String): Long? = dbQuery {
+        UserDataTable
+         .select { UserDataTable.username eq username }.map {
+             it[UserDataTable.userID]
+            }.firstOrNull()
     }
 
     override suspend fun insertNewUser(userData: UserData): UserData? = dbQuery {
-        val existingUser = Userdata.select { Userdata.userID eq userData.userID }
+        val existingUser = UserDataTable.select { UserDataTable.userID eq userData.userID }
         if (existingUser != null) {
             throw IllegalArgumentException("user already exists")
         }
-        val newUser = Userdata.insert {
+        val newUser = UserDataTable.insert {
             it[userID] = userData.userID
             it[username] = userData.username
             it[password] = userData.password
@@ -39,18 +41,25 @@ class LoginDaoImpl : LoginDao {
     }
 
     override suspend fun getUserData(uId: Long): UserData? = dbQuery {
-        Userdata
-            .select { Userdata.userID eq uId }
-            .map(::resultRowtoUserData)
+        UserDataTable
+            .select { UserDataTable.userID eq uId }
+            .map{
+                UserData(
+                    userID = it[UserDataTable.userID],
+                    username = it[UserDataTable.username],
+                    password = it[UserDataTable.password],
+                    usertype = it[UserDataTable.usertype]
+                )
+            }
             .singleOrNull()
     }
 
     override suspend fun getAllUsers(): List<UserData?> = dbQuery {
-        Userdata.selectAll().map(::resultRowtoUserData)
+        UserDataTable.selectAll().map(::resultRowtoUserData)
     }
 
     override suspend fun generateId(): Long? = dbQuery {
-        val uId = Userdata
+        val uId = UserDataTable
             .insert { userID }
         uId.resultedValues?.singleOrNull()?.let(::resultRowtoUserData)?.userID
     }

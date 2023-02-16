@@ -10,8 +10,8 @@ class AuthenticationUsecase(private val repository: IAuthRepository): IAuthUseca
 
     override suspend fun isUserValid(username: String, password: String): Pair<Boolean, Long?> {
         repository.getUID(username)?.let { uID ->
-            repository.getUserData(uID.toDomain().uID)?.let { userData ->
-                return Pair(userData.password==password,uID.toDomain().uID)
+            repository.getUserData(uID)?.let { userData ->
+                return Pair(userData.password==password,uID)
             }
         }
         return Pair(false, null)

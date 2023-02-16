@@ -5,7 +5,7 @@ import common.dao.LoginDao
 import data.model.Membersdata.autoIncrement
 import kotlinx.coroutines.runBlocking
 import login.data.UserData
-import login.data.Userdata
+
 import login.usecase.IAuthUsecase
 import login.usecase.data.UserType
 import org.jetbrains.exposed.sql.autoIncColumnType
@@ -17,9 +17,12 @@ class LoginAuthRepository(val loginDao: LoginDao) : IAuthRepository {
    //private val defaultAdmin = UserData(1, "admin", "admin", usertype = UserType.Admin.name)
 
 
-    override suspend fun getUID(username: String): UserData? {
-        val userId=loginDao.getUid(username)
-        return userId
+
+    override suspend fun getUID(username: String): Long? {
+        val size = loginDao.getAllUsers().size
+       println("XMPP: $size")
+        /* val userId=loginDao.getUid(username)*/
+        return size.toLong()
     }
 
     override suspend fun getUserData(uID: Long): UserData? {
@@ -27,7 +30,7 @@ class LoginAuthRepository(val loginDao: LoginDao) : IAuthRepository {
     }
 
     override suspend fun insertNewUser(userData: UserData) {
-        val existingUser = loginDao.getUserData(userData.userID)
+        val existingUser = getUserData(userData.userID)
         if(existingUser!=null){
             throw IllegalArgumentException("User with same UID or Username already exist")
         }

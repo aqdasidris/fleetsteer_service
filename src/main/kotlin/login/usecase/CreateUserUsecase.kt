@@ -1,14 +1,10 @@
 package login.usecase
 
-import common.FleetSteerDatabase.dbQuery
 import data.model.AuthCredentials
 import login.data.UserData
-import login.data.Userdata
 import login.repository.IAuthRepository
 import login.usecase.data.UserType
-import org.jetbrains.exposed.sql.insert
 import java.lang.IllegalArgumentException
-import java.util.UUID
 
 class CreateUserUsecase(private val repository: IAuthRepository): ICreateUserUsecase {
 
