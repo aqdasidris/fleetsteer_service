@@ -9,13 +9,14 @@ import java.lang.IllegalArgumentException
 class CreateUserUsecase(private val repository: IAuthRepository): ICreateUserUsecase {
 
     override suspend fun createUser(authCredentials: AuthCredentials, type: UserType): Pair<Boolean, Error?> {
+
         val existingUID = repository.getUID(authCredentials.username)
         if (existingUID != null) {
             return Pair(false, "Username Already Exist")
         }
-        val uId = repository.newUserID()!!
+
         val userData =
-            UserData(userID = uId, username = authCredentials.username, password = authCredentials.password, type.name)
+            UserData(userID = -1, username = authCredentials.username, password = authCredentials.password, type.name)
         try {
             repository.insertNewUser(userData)
         } catch (e: IllegalArgumentException) {

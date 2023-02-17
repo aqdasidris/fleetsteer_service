@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.*
 class LoginDaoImpl : LoginDao {
 
     private fun resultRowtoUserData(row: ResultRow): UserData {
-       println("MappingUserData $row")
+        println("MappingUserData $row")
         return UserData(
             userID = row[UserDataTable.userID],
             username = row[UserDataTable.username],
@@ -19,31 +19,48 @@ class LoginDaoImpl : LoginDao {
             usertype = row[UserDataTable.password]
         )
     }
+
     override suspend fun getUid(username: String): Long? = dbQuery {
         UserDataTable
-         .select { UserDataTable.username eq username }.map {
-             it[UserDataTable.userID]
+            .select { UserDataTable.username eq username }.map {
+                it[UserDataTable.userID]
             }.firstOrNull()
     }
 
-    override suspend fun insertNewUser(userData: UserData): UserData? = dbQuery {
-        val existingUser = UserDataTable.select { UserDataTable.userID eq userData.userID }
-        if (existingUser != null) {
-            throw IllegalArgumentException("user already exists")
+    override suspend fun insertNewUser(userData: UserData): Boolean = dbQuery {
+        if (!checkUserExist(userData.userID)) {
+            try {
+                insert(userData)
+                return@dbQuery true
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
+
+        false
+    }
+
+    private fun checkUserExist(uID: Long): Boolean {
+        val existingUser = getUserByID(uID)
+        val usernameResult = existingUser.map { it[UserDataTable.userID].toString() }
+        return usernameResult.isNotEmpty()
+    }
+
+    private fun getUserByID(uID: Long) = UserDataTable.select { UserDataTable.userID eq uID }
+
+    private fun insert(userData: UserData) {
         val newUser = UserDataTable.insert {
-            it[userID] = userData.userID
+           /* it[userID] = userData.userID*/
             it[username] = userData.username
             it[password] = userData.password
             it[usertype] = userData.usertype
         }
-        newUser.resultedValues?.singleOrNull()?.let(::resultRowtoUserData)
     }
 
     override suspend fun getUserData(uId: Long): UserData? = dbQuery {
         UserDataTable
             .select { UserDataTable.userID eq uId }
-            .map{
+            .map {
                 UserData(
                     userID = it[UserDataTable.userID],
                     username = it[UserDataTable.username],
@@ -58,32 +75,22 @@ class LoginDaoImpl : LoginDao {
         UserDataTable.selectAll().map(::resultRowtoUserData)
     }
 
-    override suspend fun generateId(): Long? = dbQuery {
-        val uId = UserDataTable
-            .insert { userID }
-        uId.resultedValues?.singleOrNull()?.let(::resultRowtoUserData)?.userID
-    }
-
-    private suspend fun isFirstUser(): Boolean {
+    private suspend fun isDbEmpty(): Boolean {
         return getAllUsers().isEmpty()
     }
 
-    suspend fun insertAdmin(){
-        if(isFirstUser()){
-            insertNewUser(userData = UserData(userID = 1, username = "admin", password = "admin", usertype = UserType.Admin.name))
+    private suspend fun insertAdmin() {
+        if (isDbEmpty()) {
+            insertNewUser(
+                userData = UserData(
+                    userID = 1,
+                    username = "admin",
+                    password = "admin",
+                    usertype = UserType.Admin.name
+                )
+            )
         }
     }
-
 
 
 }
-
-fun getLoginDaoInstance() = LoginDaoImpl().apply {
-        runBlocking {try {
-            insertAdmin()
-        }catch (e:Exception){
-            println("LoginCrash : $e")
-        }
-
-        }
-    }

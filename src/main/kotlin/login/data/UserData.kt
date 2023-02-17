@@ -10,6 +10,6 @@ object UserDataTable: Table(){
     val userID=long("userid").autoIncrement()
     val username= varchar("username",20).uniqueIndex()
     val password=varchar("password",50)
-    val usertype=varchar("usertype",1)
+    val usertype=varchar("usertype", 10)
     override val primaryKey=PrimaryKey(userID)
 }

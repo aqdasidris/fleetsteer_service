@@ -9,7 +9,6 @@ import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.*
 import io.ktor.util.date.*
 import job.jobRoute
 import kotlinx.serialization.Serializable
@@ -19,7 +18,8 @@ import login.repository.IAuthRepository
 import login.loginRoute
 import login.repository.LoginAuthRepository
 import login.repository.LoginDaoImpl
-import login.repository.getLoginDaoInstance
+import login.usecase.CreateFirstAdminUsecase
+import login.usecase.CreateUserUsecase
 import org.slf4j.event.Level
 
 fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -29,6 +29,12 @@ data class CustomUserIdPrinciple(val uID: Long, val type: String) : Principal
 
 fun Application.module() {
     FleetSteerDatabase.init()
+    val loginDao = LoginDaoImpl()
+    val repository: IAuthRepository=LoginAuthRepository(loginDao)
+    val authenticator = AuthenticationUsecase(repository)
+    val createUserUseCase = CreateUserUsecase(repository)
+    val createAdminUseCase = CreateFirstAdminUsecase(createUserUseCase, repository)
+
     install(CallLogging) {
         level = Level.INFO
     }
@@ -51,8 +57,6 @@ fun Application.module() {
         basic("auth-basic") {
             realm="access to the '/login' path"
             validate{authCredentials->
-                val repository: IAuthRepository=LoginAuthRepository(getLoginDaoInstance())
-                val authenticator = AuthenticationUsecase(repository)
                 val isValidUser = authenticator.isUserValid(authCredentials.name, authCredentials.password)
                 if(isValidUser.first){
                     val uID = isValidUser.second
@@ -69,6 +73,11 @@ fun Application.module() {
     }
 
     routing {
+        get("/") {
+            println("/: Creating Admin")
+            createAdminUseCase.invoke()
+            call.respondText("Setting Up Environment", status = HttpStatusCode.Created)
+        }
 //        get("/job/{driver_id}") {
 //            val id = call.parameters["driver_id"]
 //            ContentType.Application.Json
