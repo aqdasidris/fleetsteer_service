@@ -34,6 +34,9 @@ dependencies {
         implementation("com.h2database:h2:$h2_version")
     }
 
+
+    implementation("org.xerial:sqlite-jdbc:3.30.1")
+
 }
 
 tasks.test {

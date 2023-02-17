@@ -13,7 +13,7 @@ class LoginDaoImpl : LoginDao {
     private fun resultRowtoUserData(row: ResultRow): UserData {
        println("MappingUserData $row")
         return UserData(
-            userID =0, //row[UserDataTable.userID],
+            userID = row[UserDataTable.userID],
             username = row[UserDataTable.username],
             password = row[UserDataTable.password],
             usertype = row[UserDataTable.password]
