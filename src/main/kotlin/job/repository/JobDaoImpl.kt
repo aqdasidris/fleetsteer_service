@@ -29,7 +29,7 @@ class JobDaoImpl : JobDao {
             .map(::resultRowToJobsEntity)    }
 
     override suspend fun addJob(jobData: JobEntity): JobEntity? = dbQuery {
-        val insertJobData= JobEntities.insert {
+        JobEntities.insert {
             it[JobEntities.job_id] = jobData.job_id
             it[JobEntities.name] = jobData.name
             it[JobEntities.job_description] = jobData.job_description
@@ -38,7 +38,7 @@ class JobDaoImpl : JobDao {
             it[contact] = jobData.contact
             it[userId] = jobData.userId
         }
-        insertJobData.resultedValues?.singleOrNull()?.let(::resultRowToJobsEntity)
+        jobData
     }
 
     override suspend fun getAllJobs(): List<JobEntity?> =

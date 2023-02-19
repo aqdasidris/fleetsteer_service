@@ -2,9 +2,9 @@ package job.usecase
 
 import job.data.JobEntity
 import job.repository.IJobRepository
-import javax.inject.Inject
 
-class JobUsecase @Inject constructor(private val repository: IJobRepository):IJobUsecase {
+
+class JobUsecase (private val repository: IJobRepository):IJobUsecase {
     override suspend fun getJobData(userId: Long): List<JobEntity?> {
         return repository.getData(userId)
     }

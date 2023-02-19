@@ -1,6 +1,7 @@
 package job.data
 
 import kotlinx.serialization.Serializable
+import login.data.UserDataTable
 import org.jetbrains.exposed.sql.Table
 
 
@@ -14,7 +15,7 @@ object JobEntities: Table(){
     val delivery_address=varchar("delivery_address",5000)
     val payment=double("payment")
     val contact=integer("contact")
-    val userId=long("userId")
+    val userId=long("userId").references(UserDataTable.userID)
 
     override val primaryKey=PrimaryKey(job_id)
 }
