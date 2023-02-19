@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 val logback_version:String by project
 val ktor_version:String by project
 plugins {
@@ -37,7 +39,9 @@ dependencies {
 
     implementation("org.xerial:sqlite-jdbc:3.30.1")
 
-}
+    
+
+    }
 
 tasks.test {
     useJUnitPlatform()

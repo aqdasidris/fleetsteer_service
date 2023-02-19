@@ -10,12 +10,14 @@ import io.ktor.util.*
 import job.data.JobEntity
 import job.repository.JobDaoImpl
 import job.repository.JobRepository
+import job.usecase.AddJobUsecase
 import job.usecase.JobUsecase
 import kotlinx.coroutines.runBlocking
 import java.util.logging.Logger
 val jobDao=JobDaoImpl().apply { runBlocking {  } }
 val repository=JobRepository(jobDao)
 val jobUsecase=JobUsecase(repository)
+val addJobUsecase=AddJobUsecase(repository)
 fun Route.jobRoute(){
         get("/job/{user_id}") {
             val id=call.parameters["user_id"]
@@ -25,7 +27,7 @@ fun Route.jobRoute(){
         }
         post("/job/add") {
             val job=call.receive<JobEntity>()
-            jobUsecase.addJob(job)
+            addJobUsecase.addJob(job)
             call.respondText("added sucessfully", status = HttpStatusCode.Created)
             call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
         }
@@ -37,7 +39,5 @@ public suspend fun jobsInfo(userId:Long):List<JobEntity?>{
 
 }
 
-suspend fun addJob(jobEntity: JobEntity){
 
-}
 
