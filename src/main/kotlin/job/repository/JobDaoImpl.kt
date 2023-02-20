@@ -24,23 +24,43 @@ class JobDaoImpl : JobDao {
 
 
     override suspend fun getJob(userId: Long): List<JobEntity?> = dbQuery{
-        JobEntities
+        val jobs=JobEntities
             .select { JobEntities.userId eq userId  }
-            .map(::resultRowToJobsEntity)    }
-
-    override suspend fun addJob(jobData: JobEntity): JobEntity? = dbQuery {
-        JobEntities.insert {
-            it[JobEntities.job_id] = jobData.job_id
-            it[JobEntities.name] = jobData.name
-            it[JobEntities.job_description] = jobData.job_description
-            it[delivery_address] = jobData.delivery_address
-            it[payment] = jobData.payment
-            it[contact] = jobData.contact
-            it[userId] = jobData.userId
-        }
-        jobData
+            .map{
+                JobEntity(
+                    job_id = it[JobEntities.job_id],
+                    name = it[JobEntities.name],
+                    job_description = it[JobEntities.job_description],
+                    delivery_address = it[JobEntities.delivery_address],
+                    payment = it[JobEntities.payment],
+                    contact = it[JobEntities.contact],
+                    userId=it[JobEntities.userId]
+                )
+            }
+            return@dbQuery jobs
     }
 
+    override suspend fun addJob(jobData: JobEntity): Boolean = dbQuery {
+        try {
+            insertJob(jobData)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        true
+    }
+
+
+    private suspend fun insertJob(jobEntity: JobEntity)= dbQuery {
+        JobEntities.insert {
+           // it[JobEntities.job_id] = jobEntity.job_id
+            it[JobEntities.name] = jobEntity.name
+            it[JobEntities.job_description] = jobEntity.job_description
+            it[delivery_address] = jobEntity.delivery_address
+            it[payment] = jobEntity.payment
+            it[contact] = jobEntity.contact
+            it[userId] = jobEntity.userId
+        }
+    }
     override suspend fun getAllJobs(): List<JobEntity?> =
         dbQuery {
             JobEntities.selectAll().map(::resultRowToJobsEntity)
