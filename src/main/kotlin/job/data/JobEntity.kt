@@ -6,7 +6,14 @@ import org.jetbrains.exposed.sql.Table
 
 
 @Serializable
-data class JobEntity(val job_id:Int, val name:String, val job_description:String,val delivery_address:String, val payment:Double, val contact:Int,val userId:Long)
+data class JobEntity(
+    val job_id:Int,
+    val name:String,
+    val job_description:String,
+    val delivery_address:String,
+    val payment:Double,
+    val contact:Int,
+    val userId:Long)
 
 object JobEntities: Table(){
     val job_id=integer("id").autoIncrement()

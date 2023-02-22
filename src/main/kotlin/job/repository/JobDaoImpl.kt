@@ -5,10 +5,14 @@ import common.dao.JobDao
 import job.data.JobEntities
 import job.data.JobEntity
 import kotlinx.coroutines.runBlocking
+import login.data.UserDataTable
+import org.h2.engine.User
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
+import java.lang.IllegalArgumentException
 import java.util.logging.Logger
 
 class JobDaoImpl : JobDao {
@@ -66,9 +70,31 @@ class JobDaoImpl : JobDao {
             JobEntities.selectAll().map(::resultRowToJobsEntity)
         }
 
+    override suspend fun getJobById(jobId: Int): List<JobEntity?> {
+        try {
+            return selectJobsById( jobId)
+        }catch (e:IllegalArgumentException){
+            println("Job id not found $e")
+        }
+        return emptyList()
+    }
 
-
-
+    private suspend fun selectJobsById(jobId: Int):List<JobEntity?> = dbQuery{
+        val jobsByID=JobEntities
+            .select{JobEntities.job_id eq jobId}
+            .map{
+                JobEntity(
+                job_id = it[JobEntities.job_id],
+                name = it[JobEntities.name],
+                job_description = it[JobEntities.job_description],
+                delivery_address = it[JobEntities.delivery_address],
+                payment = it[JobEntities.payment],
+                contact = it[JobEntities.contact],
+                userId=it[JobEntities.userId]
+            )
+            }
+        return@dbQuery jobsByID
+    }
 
 
 }
