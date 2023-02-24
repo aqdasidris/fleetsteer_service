@@ -77,7 +77,9 @@ fun Application.module() {
             println("/: Creating Admin")
             createAdminUseCase.invoke()
             call.respondText("Setting Up Environment", status = HttpStatusCode.Created)
+            println("admin added")
         }
+
 //        get("/job/{driver_id}") {
 //            val id = call.parameters["driver_id"]
 //            ContentType.Application.Json
