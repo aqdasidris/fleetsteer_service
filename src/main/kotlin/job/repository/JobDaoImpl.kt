@@ -20,6 +20,7 @@ class JobDaoImpl : JobDao {
         job_id = row[JobEntities.job_id],
         name = row[JobEntities.name],
         job_description = row[JobEntities.job_description],
+        pickup_address = row[JobEntities.pickup_address],
         delivery_address = row[JobEntities.delivery_address],
         contact = row[JobEntities.contact],
         payment = row[JobEntities.payment],
@@ -35,6 +36,7 @@ class JobDaoImpl : JobDao {
                     job_id = it[JobEntities.job_id],
                     name = it[JobEntities.name],
                     job_description = it[JobEntities.job_description],
+                    pickup_address = it[JobEntities.pickup_address],
                     delivery_address = it[JobEntities.delivery_address],
                     payment = it[JobEntities.payment],
                     contact = it[JobEntities.contact],
@@ -59,6 +61,7 @@ class JobDaoImpl : JobDao {
            // it[JobEntities.job_id] = jobEntity.job_id
             it[JobEntities.name] = jobEntity.name
             it[JobEntities.job_description] = jobEntity.job_description
+            it[pickup_address]=jobEntity.pickup_address
             it[delivery_address] = jobEntity.delivery_address
             it[payment] = jobEntity.payment
             it[contact] = jobEntity.contact
@@ -87,6 +90,7 @@ class JobDaoImpl : JobDao {
                 job_id = it[JobEntities.job_id],
                 name = it[JobEntities.name],
                 job_description = it[JobEntities.job_description],
+                pickup_address = it[JobEntities.pickup_address],
                 delivery_address = it[JobEntities.delivery_address],
                 payment = it[JobEntities.payment],
                 contact = it[JobEntities.contact],

@@ -11,7 +11,7 @@ class AddJobUsecase(val repository: JobRepository):IAddJobUsecase {
 //            return Pair(false,"job already Exists")
 //        }
 
-        val newJobData=JobEntity(job_id = -1, name = jobData.name, job_description = jobData.job_description, delivery_address = jobData.delivery_address, payment = jobData.payment, contact = jobData.contact, userId = jobData.userId)
+        val newJobData=JobEntity(job_id = -1, name = jobData.name, job_description = jobData.job_description, pickup_address = jobData.pickup_address, delivery_address = jobData.delivery_address, payment = jobData.payment, contact = jobData.contact, userId = jobData.userId)
         try{
             repository.addJob(newJobData)
         }catch (e:java.lang.IllegalArgumentException){
