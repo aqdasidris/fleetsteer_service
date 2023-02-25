@@ -11,13 +11,15 @@ class JobRepository(val jobDao: JobDao): IJobRepository {
         return jobDao.getJob(userId)
     }
 
-    override suspend fun addJob(jobData: JobEntity) {
+    override suspend fun addJob(jobData: JobEntity): Int {
 //        val existingJob=jobDao.getJob(jobData.userId)
 //        if(existingJob!=null){
 //            throw IllegalArgumentException("The job already exists")
 //        }
-        jobDao.addJob(jobData)
+        return jobDao.addJob(jobData)
     }
+
+
 
 
 }
