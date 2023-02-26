@@ -9,8 +9,13 @@ class JobUsecase (private val repository: IJobRepository):IJobUsecase {
         return repository.getData(userId)
     }
 
+    override suspend fun getJobById(jobId: Int): JobEntity? {
+        return repository.getJobById(jobId)
+    }
 
-
+    override suspend fun deleteJob(job: JobEntity) {
+        repository.deleteJob(job)
+    }
 
 
 //    private fun JobEntity.toDomain():JobEntity{

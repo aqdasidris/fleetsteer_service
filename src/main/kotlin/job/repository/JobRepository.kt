@@ -19,7 +19,13 @@ class JobRepository(val jobDao: JobDao): IJobRepository {
         return jobDao.addJob(jobData)
     }
 
+    override suspend fun getJobById(jobId: Int): JobEntity? {
+        return jobDao.getJobById(jobId).first()
+    }
 
+    override suspend fun deleteJob(job: JobEntity) {
+        jobDao.delete(job)
+    }
 
 
 }

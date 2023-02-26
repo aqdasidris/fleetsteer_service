@@ -26,7 +26,7 @@ fun Route.jobRoute(){
             call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
             call.respond(jobinfo)
         }
-        post("/job/add") {
+        post("/job") {
             val job=call.receive<JobEntity>()
             val result=addJobUsecase.addJob(job)
             when(result){
@@ -38,6 +38,18 @@ fun Route.jobRoute(){
                 }
             }
 
+        }
+        delete("/job") {
+            val id=call.parameters["job_id"]?.toInt() ?: -1
+            if(id>=0){
+                val job = jobUsecase.getJobById(jobId = id)
+                job?.let {
+                    jobUsecase.deleteJob(job)
+                    call.respond(status = HttpStatusCode.OK, job)
+                } ?: call.respond(HttpStatusCode.OK)
+            }else{
+                call.response.status(HttpStatusCode.BadRequest)
+            }
         }
 
 }

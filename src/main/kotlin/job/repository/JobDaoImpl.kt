@@ -7,11 +7,8 @@ import job.data.JobEntity
 import kotlinx.coroutines.runBlocking
 import login.data.UserDataTable
 import org.h2.engine.User
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import java.lang.IllegalArgumentException
 import java.util.logging.Logger
 
@@ -89,6 +86,10 @@ class JobDaoImpl : JobDao {
             println("Job id not found $e")
         }
         return emptyList()
+    }
+
+    override suspend fun delete(job: JobEntity) {
+        dbQuery { JobEntities.deleteWhere { JobEntities.job_id eq job.job_id } }
     }
 
     private suspend fun selectJobsById(jobId: Int): List<JobEntity?> = dbQuery {

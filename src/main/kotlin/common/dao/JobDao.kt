@@ -9,4 +9,5 @@ interface JobDao {
     suspend fun getAllJobs():List<JobEntity?>
 
     suspend fun getJobById(id:Int):List<JobEntity?>
+    suspend fun delete(job: JobEntity)
 }
