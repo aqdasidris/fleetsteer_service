@@ -3,7 +3,7 @@ package vehicle.data
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
-
+@Serializable
 data class VehicleEntity(val vehicleId:Int,val vehicleName:String,val vehicleNumber:String,val vehicleType:String,val vehicleDriverId:Int,val vehicleAvailability:Boolean)
 
 object vehicle_table: Table(){

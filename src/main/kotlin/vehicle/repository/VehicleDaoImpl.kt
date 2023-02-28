@@ -8,14 +8,22 @@ import vehicle.data.VehicleEntity
 import vehicle.data.vehicle_table
 
 class VehicleDaoImpl:VehicleDao {
-    override suspend fun addVehicle(vehicleData: VehicleEntity) {
-        TODO("Not yet implemented")
+    override suspend fun addVehicle(vehicleData: VehicleEntity): Int {
+        var result=-1
+        dbQuery {
+            try {
+                result=insertVehicle(vehicleData)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return result
     }
 
     private suspend fun insertVehicle(vehicleData: VehicleEntity):Int{
         val result=dbQuery{
             vehicle_table.insert {
-                it[vehicle_id]=vehicleData.vehicleId
+                //it[vehicle_id]=vehicleData.vehicleId
                 it[vehicle_name]=vehicleData.vehicleName
                 it[vehicle_number]=vehicleData.vehicleNumber
                 it[vehicle_type]=vehicleData.vehicleType
