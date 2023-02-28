@@ -21,6 +21,7 @@ import login.repository.LoginDaoImpl
 import login.usecase.CreateFirstAdminUsecase
 import login.usecase.CreateUserUsecase
 import org.slf4j.event.Level
+import vehicle.vehicleRoute
 
 fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -89,6 +90,7 @@ fun Application.module() {
 //        }
         loginRoute()
         jobRoute()
+        vehicleRoute()
 //        post("/job") {
 //            val job = call.receive<Job>()
 //            jobdetail.add(job)
