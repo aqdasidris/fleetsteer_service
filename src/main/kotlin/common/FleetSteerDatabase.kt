@@ -1,5 +1,6 @@
 package common
 
+import Employee.data.employee_table
 import job.data.JobEntities
 import kotlinx.coroutines.Dispatchers
 import login.data.UserDataTable
@@ -21,7 +22,7 @@ object FleetSteerDatabase {
 
         transaction (database){
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(UserDataTable, JobEntities,vehicle_table)
+            SchemaUtils.create(UserDataTable, JobEntities,vehicle_table,employee_table)
         }
     }
     suspend fun <T> dbQuery(block: suspend () -> T): T =
