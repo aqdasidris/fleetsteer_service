@@ -2,7 +2,7 @@ package common.dao
 
 import Employee.data.EmployeeEntity
 
-interface EntityDao {
+interface EmployeeDao {
     suspend fun getAllEmployees():List<EmployeeEntity>?
 
     suspend fun getEmployeeById(id:Int):List<EmployeeEntity>?

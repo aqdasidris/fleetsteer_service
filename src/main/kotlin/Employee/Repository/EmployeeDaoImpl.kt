@@ -3,12 +3,11 @@ package Employee.Repository
 import Employee.data.EmployeeEntity
 import Employee.data.employee_table
 import common.FleetSteerDatabase.dbQuery
-import common.dao.EntityDao
+import common.dao.EmployeeDao
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import vehicle.data.vehicle_table
 
-class EntityDaoImpl :EntityDao {
+class EmployeeDaoImpl :EmployeeDao {
     override suspend fun getAllEmployees(): List<EmployeeEntity>? {
         return employee_table.selectAll().map(::resultRowToEmployeeEntity)
     }
