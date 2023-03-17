@@ -1,3 +1,4 @@
+import Employee.employeeRoute
 import common.FleetSteerDatabase
 import job.data.JobStatus
 import data.model.MemberData
@@ -91,6 +92,7 @@ fun Application.module() {
         loginRoute()
         jobRoute()
         vehicleRoute()
+        employeeRoute()
 //        post("/job") {
 //            val job = call.receive<Job>()
 //            jobdetail.add(job)

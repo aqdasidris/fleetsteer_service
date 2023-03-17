@@ -40,4 +40,17 @@ fun Route.employeeRoute(){
         call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
         call.respond(employeeData)
     }
+
+    delete("/employee"){
+        val id=call.parameters["employeeId"]?.toInt() ?: -1
+        if(id>0){
+            val employee= getEmployeeUsecase.getEmployeeById(id)
+            employee?.let {
+                deleteEmployeeUsecase.deleteEmployee(employee)
+                call.respond(HttpStatusCode.OK,employee)
+            }?: call.respond(HttpStatusCode.OK)
+        }else{
+            call.respond(HttpStatusCode.BadRequest)
+        }
+    }
 }
