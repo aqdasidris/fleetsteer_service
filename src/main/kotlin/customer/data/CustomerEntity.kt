@@ -15,11 +15,13 @@ data class CustomerEntity(
 )
 
 object customerTable:Table(){
-    val customer_id=integer("customer_id")
+    val customer_id=integer("customer_id").autoIncrement()
     val company_name=varchar("company_name",50)
     val registration_number=varchar("registration_name",50)
     val representative_name=varchar("represetative_name",50)
     val contact=long("contact")
     val email=varchar("email",50)
     val address=varchar("address",50)
+
+    override val primaryKey=PrimaryKey(customer_id)
 }

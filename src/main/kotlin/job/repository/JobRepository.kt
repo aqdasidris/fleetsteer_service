@@ -11,6 +11,10 @@ class JobRepository(val jobDao: JobDao): IJobRepository {
         return jobDao.getJob(userId)
     }
 
+    override suspend fun getAllJobs(): List<JobEntity?> {
+        return jobDao.getAllJobs()
+    }
+
     override suspend fun addJob(jobData: JobEntity): Int {
 //        val existingJob=jobDao.getJob(jobData.userId)
 //        if(existingJob!=null){

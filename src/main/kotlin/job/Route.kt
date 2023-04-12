@@ -26,6 +26,11 @@ fun Route.jobRoute(){
             call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
             call.respond(jobinfo)
         }
+    get("/job") {
+        val job= jobUsecase.getAllJobs()
+        call.application.environment.log.info("query params: ${call.request.queryParameters.toMap()}")
+        call.respond(job)
+    }
         post("/job") {
             val job=call.receive<JobEntity>()
             val result=addJobUsecase.addJob(job)

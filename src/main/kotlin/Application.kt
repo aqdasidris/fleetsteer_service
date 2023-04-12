@@ -1,5 +1,6 @@
 import Employee.employeeRoute
 import common.FleetSteerDatabase
+import customer.customer
 import job.data.JobStatus
 import data.model.MemberData
 import io.ktor.http.*
@@ -93,6 +94,7 @@ fun Application.module() {
         jobRoute()
         vehicleRoute()
         employeeRoute()
+        customer()
 //        post("/job") {
 //            val job = call.receive<Job>()
 //            jobdetail.add(job)
