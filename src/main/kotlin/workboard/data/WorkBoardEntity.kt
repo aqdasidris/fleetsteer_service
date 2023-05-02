@@ -24,7 +24,7 @@ data class WorkBoardEntity(
 
 object workBoardTable:Table(){
     val id=integer("id").autoIncrement()
-    val job=varchar("job",50).references(JobEntities.name)
+    val job=varchar("job",128).references(JobEntities.name)
     val price=double("price").references(JobEntities.payment)
     val employee=varchar("employee",50).references(employee_table.employee_name)
     val vehicle=varchar("vehicle",50).references(vehicle_table.vehicle_name)
