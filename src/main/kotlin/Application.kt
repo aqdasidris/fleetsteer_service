@@ -24,6 +24,7 @@ import login.usecase.CreateFirstAdminUsecase
 import login.usecase.CreateUserUsecase
 import org.slf4j.event.Level
 import vehicle.vehicleRoute
+import workboard.workBoardRoute
 
 fun main(args: Array<String>):Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -95,6 +96,7 @@ fun Application.module() {
         vehicleRoute()
         employeeRoute()
         customer()
+        workBoardRoute()
 //        post("/job") {
 //            val job = call.receive<Job>()
 //            jobdetail.add(job)
