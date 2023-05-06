@@ -9,6 +9,7 @@ import io.ktor.server.routing.*
 import io.ktor.util.*
 import job.repository.JobDaoImpl
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import vehicle.Usecase.AddVehicleResult
 import vehicle.data.VehicleEntity
 import vehicle.repository.VehicleDaoImpl
@@ -29,15 +30,17 @@ val repository=WorkboardRepository(workBoardDao)
 val addWorkboardUsecase=AddWorkboardUsecase(repository)
 val workboardUsecase=WorkboardUsecase(repository)
 
+@Serializable
+data class WorkboardNetworkModel( val vehicle:Int, val job:Int, val employee:Int, val status:Boolean )
 fun Route.workBoardRoute(){
     post("/workboard") {
-        val workboard=call.receive<WorkBoardEntity>()
-        val result= addWorkboardUsecase.addWorkboard(workboard.job.job_id,workboard.vehicle.vehicleId,workboard.employee.employeeId,workboard.status)
+        val workboard=call.receive<WorkboardNetworkModel>()
+        val result= addWorkboardUsecase.addWorkboard(workboard.job, workboard.vehicle, workboard.employee, workboard.status)
         when(result){
             is AddWorkboardResult.Failed -> call.response.status(HttpStatusCode.BadRequest)
             is AddWorkboardResult.Success -> {
                 val id=result.workboardID
-                val insertedWorkboard=workboard.copy(id=id)
+                val insertedWorkboard=workboard.copy()
                 call.respond(status = HttpStatusCode.Created,insertedWorkboard)
             }
         }

@@ -13,6 +13,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import vehicle.data.vehicle_table
+import workboard.data.workBoardTable
 import java.sql.Connection
 
 object FleetSteerDatabase {
@@ -23,7 +24,7 @@ object FleetSteerDatabase {
 
         transaction (database){
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(UserDataTable, JobEntities,vehicle_table,employee_table,customerTable)
+            SchemaUtils.create(UserDataTable, JobEntities,vehicle_table,employee_table,customerTable,workBoardTable)
         }
     }
     suspend fun <T> dbQuery(block: suspend () -> T): T =

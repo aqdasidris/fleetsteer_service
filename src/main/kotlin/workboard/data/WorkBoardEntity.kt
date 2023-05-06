@@ -21,9 +21,9 @@ data class WorkBoardEntity(
 
 object workBoardTable:Table(){
     val id=integer("id").autoIncrement()
+    val vehicle=integer("vehicle").references(vehicle_table.vehicle_id)
     val job=integer("job").references(JobEntities.job_id)
     val employee=integer("employee").references(employee_table.employee_id)
-    val vehicle=reference("vehicle",vehicle_table.vehicle_id)
     val status=bool("status")
 
     override val primaryKey=PrimaryKey(id)
