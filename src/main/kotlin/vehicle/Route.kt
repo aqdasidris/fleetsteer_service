@@ -43,16 +43,6 @@ fun Route.vehicleRoute(){
         call.respond(vehicleData)
     }
 
-//    get("/vehicle/{vehicleId}"){
-//        val id=call.parameters["vehicleId"]?.toInt() ?: -1
-//        if (id>=0){
-//                val vehicle= vehicleUsecase.getVehicleById(id)!!
-//                call.respond(HttpStatusCode.Accepted,vehicle)
-//        }
-//        else call.respond(HttpStatusCode.BadRequest)
-//
-//    }
-
     delete("/vehicle"){
         val id= call.parameters["vehicleId"]?.toInt() ?: -1
         if (id>=0) {

@@ -35,7 +35,7 @@ data class WorkboardNetworkModel( val vehicle:Int, val job:Int, val employee:Int
 fun Route.workBoardRoute(){
     post("/workboard") {
         val workboard=call.receive<WorkboardNetworkModel>()
-        val result= addWorkboardUsecase.addWorkboard(workboard.job, workboard.vehicle, workboard.employee, workboard.status)
+        val result= addWorkboardUsecase.addWorkboard(workboard.vehicle, workboard.job, workboard.employee, workboard.status)
         when(result){
             is AddWorkboardResult.Failed -> call.response.status(HttpStatusCode.BadRequest)
             is AddWorkboardResult.Success -> {

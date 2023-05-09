@@ -43,20 +43,31 @@ class WorkboardDaoImpl(val vehicleDao: VehicleDao, val jobDao: JobDao, val emplo
     }
 
     override suspend fun getAllWorkBoard(): List<WorkBoardEntity>? {
-        return dbQuery{
-          workBoardTable.selectAll().map {
-                val vehicleId = it[workBoardTable.vehicle]
-                val vehicle = vehicleDao.getVehiclebyId(vehicleId)
-                val jobId=it[workBoardTable.job]
-                val job=jobDao.getJobById(jobId)
-                val employeeId=it[workBoardTable.employee]
-                val employee=employeeDao.getEmployeeById(employeeId)
+        return dbQuery {
+            try {
+                workBoardTable.selectAll().map {
+                    val vehicleId = it[workBoardTable.vehicle]
+                    val vehicle = vehicleDao.getVehiclebyId(vehicleId)
+                    val jobId = it[workBoardTable.job]
+                    val job = jobDao.getJobById(jobId)
+                    val employeeId = it[workBoardTable.employee]
+                    val employee = employeeDao.getEmployeeById(employeeId)
 
 
-                build(vehicleEntity = vehicle!!.first(), jobEntity = job.first()!!, employeeEntity = employee!!.first(), workboard = it[workBoardTable.id], status = it[workBoardTable.status ])
+                    build(
+                        workboard = it[workBoardTable.id],
+                        vehicleEntity = vehicle!!.first(),
+                        jobEntity = job.first()!!,
+                        employeeEntity = employee!!.first(),
+                        status = it[workBoardTable.status]
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+                return@dbQuery emptyList()
             }
         }
     }
+
 
     override suspend fun getWorkboardById(workboardId: Int): List<WorkBoardEntity>? {
       return dbQuery {
@@ -83,7 +94,7 @@ class WorkboardDaoImpl(val vehicleDao: VehicleDao, val jobDao: JobDao, val emplo
     suspend fun insertWorkboard(id:Int, vehicle:Int ,jobEntity: Int,employeeEntity: Int,status: Boolean):Int{
         val result=dbQuery {
             workBoardTable.insert {
-                it[workBoardTable.id]=id
+                //it[workBoardTable.id]=id
                 it[job]=jobEntity
                 it[workBoardTable.employee]=employeeEntity
                 it[workBoardTable.vehicle]= vehicle
@@ -91,7 +102,7 @@ class WorkboardDaoImpl(val vehicleDao: VehicleDao, val jobDao: JobDao, val emplo
             }
         }
         println("ADDED RESPONSE${result.resultedValues?.get(0)}")
-        val id=result.resultedValues?.get(0)?.get(vehicle_table.vehicle_id)
+        val id=result.resultedValues?.get(0)?.get(workBoardTable.id)
         return id ?: -1
     }
 }

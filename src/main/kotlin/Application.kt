@@ -46,6 +46,7 @@ fun Application.module() {
         json(Json {
             prettyPrint = true
             isLenient = true
+            ignoreUnknownKeys=true
         })
     }
     val jobdetail = jobs()
