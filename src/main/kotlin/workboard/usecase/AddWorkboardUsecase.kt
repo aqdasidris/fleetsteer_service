@@ -14,7 +14,7 @@ class AddWorkboardUsecase(val workboardRepository: IWorkboardRepository): IAddWo
     ): AddWorkboardResult {
         var result:AddWorkboardResult=AddWorkboardResult.Failed("")
         try {
-            val workBoardid=workboardRepository.addWorkboard(id = -1,vehicle, jobEntity, employeeEntity, status)
+            val workBoardid=workboardRepository.addWorkboard(id = 1,vehicle, jobEntity, employeeEntity, status)
             if (workBoardid>=0){
                 result=AddWorkboardResult.Success(workBoardid)
             }
